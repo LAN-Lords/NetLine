@@ -138,9 +138,9 @@ const NetworkGraph = ({
       .join("image")
       .attr("href", (d) => {
         switch (d.type) {
+          case "pc":
+            return "/newrouter.png";
           case "router":
-            return "/router.png";
-          case "Router":
             return "/newrouter.png";
           case "server":
             return "/server.png";
@@ -276,7 +276,7 @@ const NetworkGraph = ({
         >
           <div>ID: {tooltip.content.id}</div>
           <div>Name: {tooltip.content.name}</div>
-          <div>Type: {tooltip.content.type}</div>
+          <div>Type: Router</div>
           <div>
             Interfaces:
             {tooltip.content.interfaces &&
@@ -311,7 +311,7 @@ const NetworkGraph = ({
             <DialogContentText id="alert-dialog-description">
               <Typography>ID: {selectedDevice?.id}</Typography>
               <Typography>Name: {selectedDevice?.name}</Typography>
-              <Typography>Type: {selectedDevice?.type}</Typography>
+              <Typography>Type: Router</Typography>
               <div>
                 Interfaces:
                 {selectedDevice?.interfaces &&
