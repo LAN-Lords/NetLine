@@ -26,10 +26,25 @@ export async function getSysLog() {
 // integrate tmr in airport
 export async function getNetwork(selectedVersion: number | null) {
   try {
-    const nodes = await axios.get(
+    let nodes = await axios.get(
       `http://localhost:8000/network/${selectedVersion}`  
     );
+    console.log("NETWORK DATA:",nodes['data']);
+    // for(let i=0; i<nodes['data']['interfaces'].length; i++){
+    //   if (nodes.data['interfaces'][i]['ip'] !== null){
+    //     const node_id = nodes.data['interfaces'][i]['node_id']
+    //     if(nodes['data'][node_id]['interfaces']){
+    //       nodes['data'][node_id]['interfaces'].push(nodes.data['interfaces'][i]);
+    //     }
+    //     else{
+    //       nodes['data'][node_id]['interfaces']=[(nodes.data['interfaces'][i])];
+    //     }
+    //   }
+    // }
+    // console.log('Final Network')
+    // console.log(JSON.parse(nodes.data))
     return nodes.data;
+
   } catch (error) {
     console.error("Error fetching nodes data:", error);
     return {
@@ -45,7 +60,7 @@ export async function getVersions() {
     console.log("version ->", versions.data);
     let list: any = [];
     versions.data.map((item: any) => {
-      list.push({ id: item.version });
+      list.unshift({ id: item.version });
     });
 
     console.log("inside ->", list);
