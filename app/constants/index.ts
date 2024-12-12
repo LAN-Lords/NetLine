@@ -155,7 +155,7 @@ export const nodelinks = links;
 //     { source: 6, target: 37 },
 // ];
 
-export const logs = [
+export let logs = [
     {
         event: "Pressure threshold exceeded at Node 12.",
         time: "2024-09-09T10:30:00Z",
@@ -208,7 +208,7 @@ export const logs = [
     }
 ];
 
-export const snmpData = [
+export let snmpData = [
     {
         index: 1,
         timestamp: '2024-09-15T08:45:00Z',
@@ -262,7 +262,7 @@ export const snmpData = [
 
 
 
-export const mockLogs = [
+export let mockLogs = [
     {
         id: 1,
         timestamp: "2023-09-08T14:30:24Z",
@@ -364,7 +364,7 @@ export const mockLogs = [
 // 8. **Debug**
 
 
-export const sysLogData = [
+export let sysLogData = [
     {
         "id": 1,
         "timestamp1": "1900-09-09T11:55:53",
