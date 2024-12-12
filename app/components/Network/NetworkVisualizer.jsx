@@ -51,7 +51,23 @@ const NetworkGraph = ({
     const height = 575;
 
     // Check if the data is correct
-    console.log("Nodes Data:", nodesData);
+    
+    let formattedNodesData = []
+    for (const node of nodesData ){
+      let newInterfaces = []
+      for (const iface of node?.interfaces) {
+        if (iface.ip) {
+          newInterfaces.push(iface)
+        }
+      }
+      formattedNodesData.push({
+        id: node?.id,
+        type: node?.type,
+        name: node?.name,
+        interfaces: newInterfaces
+      })
+    }
+    console.log("Nodes Data:", formattedNodesData);
     console.log("Links Data:", linksData);
 
     const svg = d3
@@ -70,30 +86,42 @@ const NetworkGraph = ({
     // .attr("height", height);
     // Create a map for IP to Node ID
     const ipToNodeId = {};
-    nodesData.forEach((node) => {
+    formattedNodesData.forEach((node) => {
       node.interfaces.forEach((iface) => {
-        ipToNodeId[iface.ip] = node.id;
+        if (iface.ip) {
+          ipToNodeId[iface.ip] = node.id;
+        }
       });
     });
 
     // Format linksData to use Node IDs
-    const formattedLinks = linksData.map((link) => ({
-      source: ipToNodeId[link.source],
-      target: ipToNodeId[link.target],
-    }));
+    // const formattedLinks = linksData.map((link) => ({
+    //   source: ipToNodeId[link.source],
+    //   target: ipToNodeId[link.target],
+    // }));
+
+    let formattedLinks = []
+    for (const link of linksData) {
+      if (ipToNodeId[link.source] && ipToNodeId[link.target]) {
+        formattedLinks.push({
+          source: ipToNodeId[link.source],
+          target: ipToNodeId[link.target]
+        })
+      }
+    }
 
     // Verify the formatted links
-    console.log("Formatted Links Data:", formattedLinks);
+    console.log("Formatted Links Data:", formattedLinks, "\n IptoNodeId: ", ipToNodeId);
 
-    const simulation = d3
-      .forceSimulation(nodesData)
-      .force(
-        "link",
-        d3.forceLink(formattedLinks).id((d) => d.id)
-      )
-      .force("charge", d3.forceManyBody().strength(-2000))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collision", d3.forceCollide().radius(20));
+      const simulation = d3
+        .forceSimulation(formattedNodesData)
+        .force(
+          "link",
+          d3.forceLink(formattedLinks).id((d) => d.id)
+        )
+        .force("charge", d3.forceManyBody().strength(-2000))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("collision", d3.forceCollide().radius(20));
 
     const link = svg
       .append("g")
@@ -106,13 +134,13 @@ const NetworkGraph = ({
     const node = svg
       .append("g")
       .selectAll("image")
-      .data(nodesData)
+      .data(formattedNodesData)
       .join("image")
       .attr("href", (d) => {
         switch (d.type) {
           case "router":
             return "/router.png";
-          case "pc":
+          case "Router":
             return "/newrouter.png";
           case "server":
             return "/server.png";
@@ -162,7 +190,7 @@ const NetworkGraph = ({
     const labels = svg
       .append("g")
       .selectAll("text")
-      .data(nodesData)
+      .data(formattedNodesData)
       .join("text")
       .text((d) => d.name)
       .attr("text-anchor", "middle")
